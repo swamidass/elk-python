@@ -1,0 +1,112 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "elk"
+dynamic = ["version"]
+description = 'Python wrapper for Eclipse Layout Kernel (ELK) server'
+readme = "README.md"
+requires-python = ">=3.8"
+license = "MIT"
+keywords = ["graph", "layout", "elk", "eclipse"]
+authors = [
+  { name = "S. Joshua Swamidass", email = "swamidass@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: Implementation :: CPython",
+  "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+  "importlib-resources>=5.0.0; python_version < '3.9'",
+  "pooch>=1.8.0",
+  "pydantic>=2.10.6",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pre-commit>=3.5.0",
+  "ruff>=0.11.2",
+  "pytest>=8.0.0",
+]
+
+[tool.hatch.envs.default]
+installer = "uv"
+dependencies = [
+  "pytest>=8.0.0",
+]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
+
+[project.urls]
+Documentation = "https://github.com/swamidass/elk-python#readme"
+Issues = "https://github.com/swamidass/elk-python/issues"
+Source = "https://github.com/swamidass/elk-python"
+
+[tool.hatch.version]
+path = "elk/__about__.py"
+
+[tool.hatch.envs.types]
+extra-dependencies = [
+  "mypy>=1.0.0",
+]
+[tool.hatch.envs.types.scripts]
+check = "mypy --install-types --non-interactive {args:elk tests}"
+
+[tool.coverage.run]
+source_pkgs = ["elk", "tests"]
+branch = true
+parallel = true
+omit = [
+  "elk/__about__.py",
+]
+
+[tool.coverage.paths]
+elk = ["elk", "*/elk/elk"]
+tests = ["tests", "*/elk/tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "no cov",
+  "if __name__ == .__main__.:",
+  "if TYPE_CHECKING:",
+]
+
+[tool.ruff]
+target-version = "py38"
+line-length = 88
+fix = true
+extend-exclude = ["tests/fixtures"]
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+    "UP", # pyupgrade
+]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[dependency-groups]
+dev = [
+    "ipykernel>=6.29.5",
+    "pre-commit>=3.5.0",
+    "ruff>=0.11.2",
+]

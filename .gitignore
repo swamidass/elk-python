@@ -1,0 +1,100 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Direnv
+.envrc
+.direnv/
+
+# Jupyter Notebooks
+notebooks/
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+*.ipynb
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.project
+.pydevproject
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Logs and databases
+*.log
+*.sqlite
+*.db
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ELK specific
+temp_jar/
+elk-server-*/
+*.jar
+*.zip
+
+# Local development
+local_settings.py
+instance/
+.webassets-cache
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Documentation
+docs/_build/
+site/
+
+# Distribution / packaging
+*.manifest
+*.spec
+pip-log.txt
+pip-delete-this-directory.txt
