@@ -6,7 +6,10 @@ import subprocess
 import sys
 from typing import Optional
 
+from pydantic import validate_call
+
 from .java_utils import ensure_server
+from .types import ElkGraph
 
 # Global server process
 _server_process: Optional[subprocess.Popen] = None
@@ -165,38 +168,45 @@ def main():
     run_elk_server(args.mode)
 
 
-def compute_layout(json_data: dict) -> dict:
+@validate_call()
+def compute_layout(graph: dict | ElkGraph) -> dict:
     """
-    Compute a layout for the given JSON data using the ELK server.
+    Compute a layout for the given graph using the ELK server.
     Reuses a single server process across multiple calls.
 
     Args:
-        json_data: A dictionary containing the graph to be laid out
+        graph: The graph to be laid out, either as a dictionary or ElkGraph model
 
     Returns:
         dict: The computed layout from ELK
 
     Raises:
         RuntimeError: If the server fails or returns an error
+        ValidationError: If the input validation fails
         json.JSONDecodeError: If the response cannot be parsed
     """
     # Get or create the server process
-    process = _ensure_server_process()
+    process: subprocess.Popen = _ensure_server_process()
 
     if process.stdin is None or process.stdout is None or process.stderr is None:
         raise RuntimeError("Server process has invalid pipes")
 
     try:
-        # Send the JSON data
-        json_str = json.dumps(json_data)
+        # Always validate through ElkGraph
+        validated_graph: ElkGraph = (
+            graph if isinstance(graph, ElkGraph) else ElkGraph(**graph)
+        )
+
+        # Send the JSON data without null values
+        json_str: str = validated_graph.model_dump_json(exclude_none=True)
         process.stdin.write(json_str + "\n")
         process.stdin.flush()
 
         # Read the response
-        response = process.stdout.readline()
+        response: str = process.stdout.readline()
         if not response:
             # Check for errors
-            error = process.stderr.read()
+            error: str = process.stderr.read()
             raise RuntimeError(f"ELK server failed: {error}")
 
         # Check for errors

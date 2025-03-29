@@ -1,5 +1,6 @@
 """Tests for the ELK server layout computation."""
 
+import pydantic
 import pytest
 
 from elk.server import compute_layout, shutdown_server
@@ -20,7 +21,7 @@ def test_valid_layout():
 
     try:
         # Compute layout
-        layout = compute_layout(graph)
+        layout: dict = compute_layout(graph)
 
         # Verify the layout contains all expected elements
         assert "root" in layout
@@ -72,12 +73,14 @@ def test_invalid_layout():
         ],
     }
 
-    with pytest.raises(RuntimeError) as exc_info:
+    with pytest.raises(pydantic.ValidationError) as exc_info:
         compute_layout(invalid_graph)
 
-    # Verify error message indicates the problem
-    error = str(exc_info.value)
-    assert "ELK server" in error
+    # Verify the validation error contains the expected missing fields
+    error_msg = str(exc_info.value)
+    assert "sources" in error_msg
+    assert "targets" in error_msg
+    assert "Field required" in error_msg
 
     # Clean up
     shutdown_server()
